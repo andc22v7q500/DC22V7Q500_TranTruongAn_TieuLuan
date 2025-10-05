@@ -1,4 +1,4 @@
-const ThuongHieuService = require("../services/thuonghieu.service");
+const ThuongHieuService = require("../services/thuong-hieu.service");
 const ApiError = require("../api-error"); // Import lớp lỗi đã tạo
 
 // Tạo mới

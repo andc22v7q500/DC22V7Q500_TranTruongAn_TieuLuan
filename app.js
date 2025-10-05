@@ -3,8 +3,8 @@ const cors = require("cors");
 const ApiError = require("./app/api-error");
 
 const app = express();
-const danhMucRouter = require("./app/routes/danhmuc.route");
-const thuongHieuRouter = require("./app/routes/thuonghieu.route");
+const danhMucRouter = require("./app/routes/danh-muc.route");
+const thuongHieuRouter = require("./app/routes/thuong-hieu.route");
 
 app.use(cors());
 app.use(express.json());

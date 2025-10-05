@@ -1,6 +1,4 @@
-// app/controllers/danhmuc.controller.js
-
-const DanhMucService = require("../services/danhmuc.service");
+const DanhMucService = require("../services/danh-muc.service");
 const ApiError = require("../api-error"); // Import lớp lỗi đã tạo
 
 // Tạo mới

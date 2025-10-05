@@ -1,7 +1,7 @@
 // app/routes/danhmuc.route.js
 
 const express = require("express");
-const danhmuc = require("../controllers/danhmuc.controller");
+const danhmuc = require("../controllers/danh-muc.controller");
 
 const router = express.Router();
 
