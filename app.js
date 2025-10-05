@@ -5,11 +5,13 @@ const ApiError = require("./app/api-error");
 const app = express();
 const danhMucRouter = require("./app/routes/danh-muc.route");
 const thuongHieuRouter = require("./app/routes/thuong-hieu.route");
+const sanPhamRouter = require("./app/routes/san-pham.route");
 
 app.use(cors());
 app.use(express.json());
 app.use("/api/danh-muc", danhMucRouter);
 app.use("/api/thuong-hieu", thuongHieuRouter);
+app.use("/api/san-pham", sanPhamRouter);
 
 app.get("/", (req, res) => {
   res.json({ message: "Tieu Luan Website ban hang Van phong pham" });
