@@ -4,10 +4,12 @@ const ApiError = require("./app/api-error");
 
 const app = express();
 const danhMucRouter = require("./app/routes/danhmuc.route");
+const thuongHieuRouter = require("./app/routes/thuonghieu.route");
 
 app.use(cors());
 app.use(express.json());
 app.use("/api/danh-muc", danhMucRouter);
+app.use("/api/thuong-hieu", thuongHieuRouter);
 
 app.get("/", (req, res) => {
   res.json({ message: "Tieu Luan Website ban hang Van phong pham" });
