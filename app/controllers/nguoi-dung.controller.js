@@ -63,7 +63,7 @@ exports.signIn = async (req, res, next) => {
     // 4. Tạo JWT token
     const token = jwt.sign(
       { id: user.id, vai_tro: user.vai_tro }, // payload chứa thông tin người dùng
-      "YOUR_SECRET_KEY", // Khóa bí mật (nên đặt trong file .env)
+      process.env.JWT_SECRET,
       { expiresIn: "24h" } // Token hết hạn sau 24 giờ
     );
 
@@ -77,5 +77,25 @@ exports.signIn = async (req, res, next) => {
   } catch (error) {
     console.error("SIGNIN ERROR:", error);
     return next(new ApiError(500, "Có lỗi xảy ra khi đăng nhập"));
+  }
+};
+
+exports.getProfile = async (req, res, next) => {
+  try {
+    // authMiddleware đã xác thực và lưu user vào req.user
+    // Chúng ta chỉ cần lấy id từ đó và gọi service
+    const userId = req.user.id;
+    const userProfile = await NguoiDungService.findById(userId);
+
+    if (!userProfile) {
+      return next(new ApiError(404, "Không tìm thấy người dùng"));
+    }
+
+    // Service findById đã được thiết kế để không trả về mật khẩu, rất an toàn
+    return res.send(userProfile);
+  } catch (error) {
+    return next(
+      new ApiError(500, "Có lỗi xảy ra khi lấy thông tin người dùng")
+    );
   }
 };
