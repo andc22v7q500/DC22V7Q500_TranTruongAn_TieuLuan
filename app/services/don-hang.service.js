@@ -95,5 +95,56 @@ class DonHangService {
   }
 
   // (Các hàm khác như lấy lịch sử đơn hàng...)
+
+  // Lấy TẤT CẢ đơn hàng (cho Admin)
+  async findAll() {
+    // Dùng JOIN để lấy cả tên người đặt hàng cho dễ hiển thị
+    const sql = `
+        SELECT dh.*, nd.ho_ten AS ten_nguoi_dat
+        FROM don_hang AS dh
+        JOIN nguoi_dung AS nd ON dh.ma_nguoi_dung = nd.id
+        ORDER BY dh.id DESC 
+    `;
+    const [rows] = await pool.execute(sql);
+    return rows;
+  }
+
+  // Cập nhật trạng thái đơn hàng
+  async updateStatus(id, newStatus) {
+    const sql = "UPDATE don_hang SET trang_thai = ? WHERE id = ?";
+    const [result] = await pool.execute(sql, [newStatus, id]);
+    return result.affectedRows > 0;
+  }
+
+  // Lấy tất cả đơn hàng của MỘT người dùng
+  async findAllByUserId(userId) {
+    const sql =
+      "SELECT * FROM don_hang WHERE ma_nguoi_dung = ? ORDER BY id DESC";
+    const [rows] = await pool.execute(sql, [userId]);
+    return rows;
+  }
+
+  // Lấy chi tiết MỘT đơn hàng, đảm bảo nó thuộc về đúng người dùng
+  async findOneByUserId(orderId, userId) {
+    // Lấy thông tin đơn hàng
+    const [orderRows] = await pool.execute(
+      "SELECT * FROM don_hang WHERE id = ? AND ma_nguoi_dung = ?",
+      [orderId, userId]
+    );
+    if (orderRows.length === 0) return null;
+    const order = orderRows[0];
+
+    // Lấy chi tiết các sản phẩm trong đơn hàng đó
+    const [detailRows] = await pool.execute(
+      `SELECT ctdh.*, btsp.ten_bien_the, sp.ten_san_pham 
+         FROM chi_tiet_don_hang AS ctdh
+         JOIN bien_the_san_pham AS btsp ON ctdh.ma_bien_the = btsp.id
+         JOIN san_pham AS sp ON btsp.ma_san_pham = sp.id
+         WHERE ctdh.ma_don_hang = ?`,
+      [orderId]
+    );
+    order.chi_tiet = detailRows;
+    return order;
+  }
 }
 module.exports = new DonHangService();

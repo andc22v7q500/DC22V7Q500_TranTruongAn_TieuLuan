@@ -6,8 +6,8 @@ const router = express.Router();
 
 router.use(authMiddleware); // Tất cả API đơn hàng đều cần đăng nhập
 
-router.route("/").post(donhang.create);
+router.route("/").get(donhang.findAllForUser).post(donhang.create);
 
-// (Sau này thêm GET để lấy lịch sử đơn hàng)
+router.route("/:id").get(donhang.findOneForUser);
 
 module.exports = router;
