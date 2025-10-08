@@ -1,6 +1,7 @@
 const express = require("express");
 const sanpham = require("../controllers/san-pham.controller");
 const bienthe = require("../controllers/bien-the-san-pham.controller");
+const danhGiaRouter = require("./danh-gia.route");
 const authMiddleware = require("../middlewares/auth.middleware");
 const adminMiddleware = require("../middlewares/admin.middleware");
 
@@ -27,5 +28,7 @@ router
   .route("/bien-the/:id")
   .put([authMiddleware, adminMiddleware], bienthe.update)
   .delete([authMiddleware, adminMiddleware], bienthe.delete);
+
+router.use("/:productId/danh-gia", danhGiaRouter);
 
 module.exports = router;
