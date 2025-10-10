@@ -99,3 +99,86 @@ exports.getProfile = async (req, res, next) => {
     );
   }
 };
+
+exports.updateProfile = async (req, res, next) => {
+  if (Object.keys(req.body).length === 0) {
+    return next(new ApiError(400, "Dữ liệu cập nhật không được để trống"));
+  }
+  try {
+    const userId = req.user.id; // Lấy id của chính người đang đăng nhập
+    const document = await NguoiDungService.updateProfile(userId, req.body);
+    if (!document) {
+      return next(new ApiError(404, "Không tìm thấy người dùng"));
+    }
+    return res.send({
+      message: "Thông tin cá nhân đã được cập nhật",
+      data: document,
+    });
+  } catch (error) {
+    return next(new ApiError(500, "Lỗi khi cập nhật thông tin cá nhân"));
+  }
+};
+
+// [ADMIN] Lấy danh sách tất cả người dùng
+exports.findAll = async (req, res, next) => {
+  try {
+    const documents = await NguoiDungService.findAll();
+    return res.send(documents);
+  } catch (error) {
+    return next(new ApiError(500, "Lỗi khi lấy danh sách người dùng"));
+  }
+};
+
+// [ADMIN] Lấy chi tiết một người dùng
+exports.findOne = async (req, res, next) => {
+  try {
+    const document = await NguoiDungService.findById(req.params.id);
+    if (!document) {
+      return next(new ApiError(404, "Không tìm thấy người dùng"));
+    }
+    return res.send(document);
+  } catch (error) {
+    return next(
+      new ApiError(
+        500,
+        `Lỗi khi lấy thông tin người dùng với id=${req.params.id}`
+      )
+    );
+  }
+};
+
+// [ADMIN] Cập nhật một người dùng (ví dụ: đổi vai trò, họ tên, sđt)
+exports.update = async (req, res, next) => {
+  if (Object.keys(req.body).length === 0) {
+    return next(new ApiError(400, "Dữ liệu cập nhật không được để trống"));
+  }
+  try {
+    const document = await NguoiDungService.update(req.params.id, req.body);
+    if (!document) {
+      return next(new ApiError(404, "Không tìm thấy người dùng"));
+    }
+    return res.send({
+      message: "Người dùng đã được cập nhật thành công",
+      data: document,
+    });
+  } catch (error) {
+    return next(
+      new ApiError(500, `Lỗi khi cập nhật người dùng với id=${req.params.id}`)
+    );
+  }
+};
+
+// [ADMIN] Xóa một người dùng
+exports.delete = async (req, res, next) => {
+  try {
+    const deleted = await NguoiDungService.delete(req.params.id);
+    if (!deleted) {
+      return next(new ApiError(404, "Không tìm thấy người dùng"));
+    }
+    return res.send({ message: "Người dùng đã được xóa thành công" });
+  } catch (error) {
+    return next(
+      new ApiError(500, `Lỗi khi xóa người dùng với id=${req.params.id}`)
+    );
+  }
+};

@@ -10,6 +10,7 @@ router.post("/signup", nguoidung.signUp);
 router.post("/signin", nguoidung.signIn);
 
 router.get("/profile", authMiddleware, nguoidung.getProfile);
+router.put("/profile", authMiddleware, nguoidung.updateProfile);
 
 // (Sau này có thể thêm các route CRUD cho admin ở đây, ví dụ: router.get("/", ...))
 

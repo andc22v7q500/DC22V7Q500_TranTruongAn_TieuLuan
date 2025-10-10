@@ -61,6 +61,29 @@ class DanhGiaService {
     const [rows] = await pool.execute(sql, [productId]);
     return rows;
   }
+
+  async findAllForAdmin() {
+    const sql = `
+        SELECT 
+            dg.id, dg.so_sao, dg.binh_luan, dg.ngay_tao,
+            nd.id AS ma_nguoi_dung, nd.email AS email_nguoi_dung,
+            sp.id AS ma_san_pham, sp.ten_san_pham
+        FROM danh_gia_san_pham AS dg
+        JOIN nguoi_dung AS nd ON dg.ma_nguoi_dung = nd.id
+        JOIN san_pham AS sp ON dg.ma_san_pham = sp.id
+        ORDER BY dg.ngay_tao DESC
+    `;
+    const [rows] = await pool.execute(sql);
+    return rows;
+  }
+
+  async deleteForAdmin(id) {
+    const [result] = await pool.execute(
+      "DELETE FROM danh_gia_san_pham WHERE id = ?",
+      [id]
+    );
+    return result.affectedRows > 0;
+  }
 }
 
 module.exports = new DanhGiaService();

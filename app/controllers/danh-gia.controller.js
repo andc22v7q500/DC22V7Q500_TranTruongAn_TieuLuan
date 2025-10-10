@@ -43,3 +43,26 @@ exports.findAll = async (req, res, next) => {
     return next(new ApiError(500, "Có lỗi xảy ra khi lấy danh sách đánh giá"));
   }
 };
+
+exports.findAllForAdmin = async (req, res, next) => {
+  try {
+    const documents = await DanhGiaService.findAllForAdmin();
+    return res.send(documents);
+  } catch (error) {
+    return next(new ApiError(500, "Lỗi khi lấy danh sách tất cả đánh giá"));
+  }
+};
+
+exports.deleteForAdmin = async (req, res, next) => {
+  try {
+    const deleted = await DanhGiaService.deleteForAdmin(req.params.id);
+    if (!deleted) {
+      return next(new ApiError(404, "Không tìm thấy đánh giá"));
+    }
+    return res.send({ message: "Đánh giá đã được xóa thành công" });
+  } catch (error) {
+    return next(
+      new ApiError(500, `Lỗi khi xóa đánh giá với id=${req.params.id}`)
+    );
+  }
+};
